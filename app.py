@@ -9,6 +9,28 @@ app.secret_key = 'clave_secreta_para_sesiones'
 def get_db_connection():
     return psycopg2.connect(os.getenv('DATABASE_URL'))
 
+def inicializar_bd():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS usuarios (
+            id SERIAL PRIMARY KEY,
+            usuario VARCHAR(50) UNIQUE NOT NULL,
+            password_hash VARCHAR(255) NOT NULL,
+            nombre VARCHAR(100) NOT NULL
+        )
+    ''')
+    cur.execute('SELECT COUNT(*) FROM usuarios')
+    if cur.fetchone()[0] == 0:
+        cur.execute('''
+            INSERT INTO usuarios (usuario, password_hash, nombre) VALUES
+            ('test1', '$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjIQqiRQYm', 'Juan Perez'),
+            ('test2', '$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjIQqiRQYm', 'Maria Gomez')
+        ''')
+    conn.commit()
+    cur.close()
+    conn.close()
+
 HTML_LOGIN = """
 <h2>Iniciar Sesión</h2>
 <form method="POST">
@@ -48,4 +70,7 @@ def bienvenida():
     return f"<h1>Bienvenido, {session['nombre']}</h1>"
 
 if __name__ == '__main__':
+    # La variable DATABASE_URL la inyecta automáticamente Blitz Cloud
+    if os.getenv('DATABASE_URL'):
+        inicializar_bd()
     app.run(host='0.0.0.0', port=5000)
