@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CloudLab | HexaTech OS</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #02050b;
+      --bg-panel: rgba(6, 11, 22, 0.82);
+      --bg-card: rgba(9, 16, 32, 0.65);
+      --cyan-main: #00d2ff;
+      --cyan-glow: rgba(0, 240, 255, 0.4);
+      --cyan-dim: rgba(0, 240, 255, 0.1);
+      --emerald: #34d399;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --font-sans: 'DM Sans', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: var(--bg-dark); color: var(--text-main); font-family: var(--font-sans); line-height: 1.6; overflow-x: hidden; }
+    .aura-bg { position: fixed; top: -20%; left: 50%; transform: translateX(-50%); width: 80vw; height: 60vh; background: radial-gradient(circle, rgba(0,210,255,0.08) 0%, rgba(2,5,11,0) 70%); z-index: -1; pointer-events: none; }
+    a { text-decoration: none; color: inherit; }
+    .navbar { position: fixed; top: 0; width: 100%; background: rgba(2, 5, 11, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); z-index: 100; }
+    .nav-container { max-width: 1160px; margin: 0 auto; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; letter-spacing: -0.5px; }
+    .brand-icon { width: 32px; height: 32px; background: var(--cyan-main); color: #000; border-radius: 8px; display: grid; place-items: center; font-size: 14px; }
+    .text-cyan { color: var(--cyan-main); }
+    .btn-primary, .btn-primary-small { background: #fff; color: #020617; border-radius: 50px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; transition: all 0.3s ease; box-shadow: 0 0 20px rgba(0, 240, 255, 0.2); }
+    .btn-primary { padding: 14px 28px; font-size: 15px; }
+    .btn-primary-small { padding: 10px 20px; font-size: 13px; }
+    .btn-primary:hover, .btn-primary-small:hover { background: var(--cyan-main); box-shadow: 0 0 30px rgba(0, 240, 255, 0.6); transform: translateY(-2px); }
+    .btn-secondary { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 14px 28px; border-radius: 50px; font-weight: 600; font-size: 15px; transition: all 0.3s ease; }
+    .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+    .container { max-width: 1160px; margin: 0 auto; padding: 120px 24px 60px; }
+    .hero { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; margin-bottom: 100px; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; background: var(--cyan-dim); border: 1px solid var(--cyan-glow); padding: 6px 16px; border-radius: 50px; font-family: var(--font-mono); font-size: 11px; color: var(--cyan-main); margin-bottom: 24px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--cyan-main); }
+    .pulse { animation: pulse-anim 2s infinite; }
+    .pulse-emerald { background: var(--emerald); animation: pulse-em 2s infinite; }
+    @keyframes pulse-anim { 0% { box-shadow: 0 0 0 0 rgba(0,210,255,0.4); } 70% { box-shadow: 0 0 0 10px rgba(0,210,255,0); } 100% { box-shadow: 0 0 0 0 rgba(0,210,255,0); } }
+    @keyframes pulse-em { 0% { box-shadow: 0 0 0 0 rgba(52,211,153,0.4); } 70% { box-shadow: 0 0 0 10px rgba(52,211,153,0); } 100% { box-shadow: 0 0 0 0 rgba(52,211,153,0); } }
+    .hero-title { font-size: 54px; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 24px; }
+    .shiny-text { background: linear-gradient(to right, #091020 0%, #0B2551 15%, #A4F4FD 35%, #00d2ff 50%, #0B2551 65%, #091020 85%); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shiny 5s linear infinite; }
+    @keyframes shiny { to { background-position: 200% center; } }
+    .hero-desc { color: var(--text-muted); font-size: 18px; margin-bottom: 40px; max-width: 480px; }
+    .hero-actions { display: flex; gap: 16px; }
+    .terminal-box { background: #040812; border: 1px solid rgba(0, 240, 255, 0.3); border-radius: 16px; box-shadow: 0 0 60px rgba(0, 240, 255, 0.15); overflow: hidden; }
+    .terminal-header { background: #080d1a; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
+    .mac-btns { display: flex; gap: 6px; }
+    .mac-btns span { width: 12px; height: 12px; border-radius: 50%; background: #ef4444; }
+    .mac-btns span:nth-child(2) { background: #f59e0b; }
+    .mac-btns span:nth-child(3) { background: #10b981; }
+    .terminal-title { font-family: var(--font-mono); font-size: 11px; color: var(--cyan-main); }
+    .terminal-status { font-family: var(--font-mono); font-size: 10px; color: var(--emerald); display: flex; align-items: center; gap: 6px; }
+    .terminal-body { padding: 24px; font-family: var(--font-mono); font-size: 13px; color: #cbd5e1; }
+    .code-line { margin-bottom: 4px; }
+    .keyword { color: #f472b6; }
+    .string { color: #34d399; }
+    .comment { color: #64748b; font-style: italic; }
+    .success { color: var(--cyan-main); margin-top: 16px; }
+    .divider { display: flex; align-items: center; margin: 60px 0; }
+    .line { flex: 1; height: 1px; background: linear-gradient(to right, transparent, rgba(0,210,255,0.3), transparent); }
+    .divider-label { background: #060b16; border: 1px solid var(--cyan-dim); padding: 4px 16px; border-radius: 50px; font-family: var(--font-mono); font-size: 11px; color: var(--cyan-main); text-transform: uppercase; }
+    .grid-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 80px; }
+    .liquid-card { background: var(--bg-card); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 32px; transition: all 0.3s ease; }
+    .liquid-card:hover { border-color: var(--cyan-glow); transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0, 240, 255, 0.12); }
+    .border-glow { border-color: rgba(0, 240, 255, 0.3); box-shadow: inset 0 0 20px rgba(0,210,255,0.05); }
+    .card-icon { font-size: 40px; margin-bottom: 20px; }
+    .card-tag { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 8px; }
+    .liquid-card h3 { font-size: 24px; margin-bottom: 12px; }
+    .liquid-card p { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
+    .tech-badge { background: rgba(255,255,255,0.05); padding: 6px 12px; border-radius: 6px; font-family: var(--font-mono); font-size: 11px; color: var(--cyan-main); }
+    .demo-section { display: flex; justify-content: center; }
+    .demo-panel { background: var(--bg-panel); border: 1px solid rgba(0,210,255,0.2); border-radius: 24px; padding: 40px; max-width: 500px; width: 100%; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+    .demo-tag { font-family: var(--font-mono); font-size: 11px; color: var(--cyan-main); margin-bottom: 12px; }
+    .demo-panel h2 { font-size: 32px; margin-bottom: 12px; }
+    .demo-panel h2 span { color: var(--cyan-main); }
+    .demo-panel p { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
+    .credentials { background: #040812; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; margin-bottom: 24px; text-align: left; }
+    .cred-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .cred-row:last-child { margin-bottom: 0; }
+    .cred-row span { font-size: 14px; color: var(--text-muted); }
+    .cred-row code { background: rgba(0,210,255,0.1); color: var(--cyan-main); padding: 6px 12px; border-radius: 6px; font-family: var(--font-mono); font-size: 13px; border: 1px solid rgba(0,210,255,0.2); }
+    @media (max-width: 900px) { .hero { grid-template-columns: 1fr; text-align: center; } .hero-actions { justify-content: center; } .hero-desc { margin: 0 auto 40px; } .grid-cards { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="aura-bg"></div>
+
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="brand">
+        <div class="brand-icon">HT</div>
+        <span>cloud<span class="text-cyan">.</span>lab</span>
+      </div>
+      <a href="/login" class="btn-primary-small">
+        <span>Iniciar Sesión</span> ↗
+      </a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-content">
+        <div class="eyebrow">
+          <span class="dot pulse"></span>
+          <span>ACTIVIDAD 10 · CLOUD COMPUTING</span>
+        </div>
+        
+        <h1 class="hero-title">
+          Despliegue Cloud con<br>
+          <span class="shiny-text">Flask & PostgreSQL.</span>
+        </h1>
+        
+        <p class="hero-desc">
+          Infraestructura web contenedorizada bajo arquitectura Zero-Trust. Base de datos relacional gestionada y desplegada con alta disponibilidad en Blitz Cloud.
+        </p>
+
+        <div class="hero-actions">
+          <a href="/login" class="btn-primary">
+            <span>Ejecutar Demo</span> ↗
+          </a>
+          <a href="#arquitectura" class="btn-secondary">
+            Explorar Arquitectura
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="terminal-box">
+          <div class="terminal-header">
+            <div class="mac-btns"><span></span><span></span><span></span></div>
+            <div class="terminal-title">HexaTech OS v2.4 — Live Monitor</div>
+            <div class="terminal-status"><span class="dot pulse-emerald"></span> ONLINE</div>
+          </div>
+          <div class="terminal-body">
+            <div class="code-line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</div>
+            <div class="code-line"><span class="keyword">import</span> psycopg2, os</div>
+            <br>
+            <div class="code-line">app = Flask(__name__)</div>
+            <div class="code-line comment"># Conectando a instancia PostgreSQL 17</div>
+            <div class="code-line">conn = psycopg2.connect(os.getenv(<span class="string">'DATABASE_URL'</span>))</div>
+            <br>
+            <div class="code-line"><span class="keyword">print</span>(<span class="string">"Contenedor activo en Blitz Cloud 🚀"</span>)</div>
+            <div class="code-line success">>> Status: 200 OK - Secure Connection</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider">
+      <div class="line"></div>
+      <span class="divider-label">Arquitectura del Sistema</span>
+      <div class="line"></div>
+    </div>
+
+    <section id="arquitectura" class="grid-cards">
+      <div class="liquid-card">
+        <div class="card-icon">🐍</div>
+        <div class="card-tag">01 · PYTHON & FLASK</div>
+        <h3>Backend Application</h3>
+        <p>Motor de rutas y sesiones de usuario con lógica de autenticación segura. Conectado mediante variables de entorno aisladas.</p>
+        <div class="card-footer">
+          <span class="tech-badge">Puerto 5000</span>
+        </div>
+      </div>
+
+      <div class="liquid-card border-glow">
+        <div class="card-icon">🐘</div>
+        <div class="card-tag text-cyan">02 · PERSISTENCIA</div>
+        <h3>PostgreSQL 17</h3>
+        <p>Instancia relacional en la nube. Inicialización automática de tablas y validación directa de credenciales cifradas.</p>
+        <div class="card-footer">
+          <span class="tech-badge">SSL / TLS</span>
+        </div>
+      </div>
+
+      <div class="liquid-card">
+        <div class="card-icon">🐳</div>
+        <div class="card-tag">03 · VIRTUALIZACIÓN</div>
+        <h3>Docker & Blitz Cloud</h3>
+        <p>Empaquetado inmutable en imagen personalizada. Despliegue automatizado garantizando consistencia entre entornos.</p>
+        <div class="card-footer">
+          <span class="tech-badge">jerkooo/app-cloud</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="demo-section">
+      <div class="demo-panel">
+        <div class="demo-tag">ENTORNO DE PRUEBAS</div>
+        <h2>Validación de <span>Acceso</span></h2>
+        <p>Utiliza las siguientes credenciales de solo lectura para ingresar al sistema y verificar la conectividad con la base de datos.</p>
+        
+        <div class="credentials">
+          <div class="cred-row">
+            <span>Usuario:</span>
+            <code>test1</code>
+          </div>
+          <div class="cred-row">
+            <span>Clave:</span>
+            <code>12345</code>
+          </div>
+        </div>
+        
+        <a href="/login" class="btn-primary w-full text-center" style="justify-content: center;">
+          <span>Acceder al Portal</span> ↗
+        </a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
